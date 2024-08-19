@@ -22,34 +22,34 @@ var audioFiles = [
         song: "Stars Will Fall"
         },
         {
-        src: "comment.mp3",
-        artist: "Francoise Hardy (leak)",
-        song: "Comment te dire adieu"
+        src: "sickle.mp3",
+        artist: "Turnabout, Sematary",
+        song: "Sickle"
         },
         {
-        src: "yolok.mp3",
-        artist: "yung bruh (rookie)",
-        song: "yolok"
+        src: "hero.mp3",
+        artist: "juno",
+        song: "hero"
         },
         {
-        src: "madeurmark.mp3",
-        artist: "hail the sun (storm)",
-        song: "Made Your Mark"
+        src: "souljah.mp3",
+        artist: "lil tracy",
+        song: "souljahwitch's faith"
         },
         {
-        src: "onme.mp3",
-        artist: "jaydes (beatens)",
-        song: "on me ft. jaydes"
+        src: "orbs.mp3",
+        artist: "Sematary, Ghost Mountain",
+        song: "Orbs"
         },
         {
-        src: "addygeek.mp3",
-        artist: "summrs (religion)",
-        song: "Addy Geek"
+        src: "cartoon.mp3",
+        artist: "OutBy16",
+        song: "Cartoon"
         },
         {
-        src: "molchat.mp3",
-        artist: "molchat doma (professor)",
-        song: "Судно (Борис Рижий)"
+        src: "reverence.mp3",
+        artist: "Sematary",
+        song: "Reverence"
         },
 ];
 
