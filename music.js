@@ -12,14 +12,14 @@ var audioFiles = [
         song: "Shotgun"
         },
         {
-        src: "a2z.mp3",
-        artist: "babytron (law)",
-        song: "a2z"
+        src: "sloth.mp3",
+        artist: "jaydes",
+        song: "sloth"
         },
         {
-        src: "distance.mp3",
-        artist: "chr1ssy (lurkin)",
-        song: "Distance"
+        src: "stars.mp3",
+        artist: "Duster",
+        song: "Stars Will Fall"
         },
         {
         src: "comment.mp3",
