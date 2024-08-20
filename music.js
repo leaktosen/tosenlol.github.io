@@ -22,7 +22,7 @@ var audioFiles = [
         song: "Stars Will Fall"
         },
         {
-        src: "sickle.mp3",
+        src: "sickles.mp3",
         artist: "Turnabout, Sematary",
         song: "Sickle"
         },
@@ -37,9 +37,9 @@ var audioFiles = [
         song: "souljahwitch's faith"
         },
         {
-        src: "orbs.mp3",
-        artist: "Sematary, Ghost Mountain",
-        song: "Orbs"
+        src: "it's nothing.mp3",
+        artist: "osquinn",
+        song: "it's nothing"
         },
         {
         src: "cartoon.mp3",
