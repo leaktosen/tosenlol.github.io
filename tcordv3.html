@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tosencord</title>
+    <link rel="stylesheet" href="crt.css">
+    <style>
+        @font-face {
+            font-family: 'VCR_OSD_MONO';
+            src: url('VCR_OSD_MONO_1.001.ttf') format('truetype');
+        } 
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            min-height: 100vh; 
+            background-color: black;
+            color: #00FF00; 
+            font-family: 'VCR_OSD_MONO', monospace;
+            margin: 0;
+            overflow: hidden; 
+            user-select: none;
+        }
+
+        .container {
+            text-align: left;
+            background-color: black;
+            padding: 20px;
+            border: 1px solid #00FF00;
+            width: 60%;
+            max-width: 800px;
+            box-shadow: none;
+        }
+
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #00FF00;
+            text-align: center;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input, button, textarea {
+            display: block;
+            width: 100%;
+            max-width: 500px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #00FF00;
+            border-radius: 3px;
+            font-size: 1em;
+            background-color: black;
+            color: #00FF00;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #004d00; 
+        }
+
+        .slider-container {
+            margin: 20px 0;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .slider {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 15px;
+            background: #00FF00;
+            outline: none;
+            border-radius: 5px;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: black;
+            border: 2px solid #00FF00;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: black;
+            border: 2px solid #00FF00;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            border: 1px solid #00FF00;
+            border-radius: 3px;
+            background-color: black;
+        }
+
+        .message.user {
+            background-color: #004d00; 
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #00FF00;
+            padding: 20px;
+            border: 1px solid #00FF00;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-content {
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #00FF00;
+            font-size: 1.2em;
+        }
+
+        .main-content, .chat-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-container {
+            width: 45%;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #00FF00;
+            border-radius: 3px;
+            background-color: black;
+        }
+
+        .message-input {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .message-input textarea {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .go-to-chat-btn, .back-to-main-btn, .switch-token-btn {
+            display: block;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #00FF00;
+            border-radius: 3px;
+            background-color: black;
+            color: #00FF00;
+            cursor: pointer;
+        }
+
+        .chat-container.hidden {
+            display: none;
+        }
+
+        .chat-ui {
+            display: none;
+        }
+
+        .chat-ui.show {
+            display: block;
+        }
+
+        .welcome-screen {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #00FF00;
+            padding: 20px;
+            border: 1px solid #00FF00;
+            border-radius: 5px;
+            text-align: center;
+            z-index: 2000;
+            opacity: 1;
+            transition: opacity 2s ease-out;
+        }
+
+        .welcome-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body> 
+    <div class="container hidden" id="loginContainer">
+    </div>
+
+    <div class="container" id="tokenContainer">
+        <h1>Enter Token</h1>
+        <form id="tokenForm" onsubmit="enterToken(); return false;" class="form-container">
+            <input type="password" id="discordToken" placeholder="Enter your Discord token" required>
+            <button type="button" id="storeTokenButton" onclick="storeToken()">Store Token</button>
+            <button type="button" id="showTokenButton" onclick="toggleTokenVisibility()">Show Token</button>
+            <div id="tokenText" style="display: none;"></div>
+            <button type="button" onclick="enterToken()">Enter Token</button>
+        </form>
+    </div>
+    
+    <crt id="crt">   
+    </crt>
+
+    <div class="container hidden" id="storedTokensContainer">
+        <h1>Stored Tokens</h1>
+        <ul id="storedTokens"></ul>
+        <select id="selectToken"></select>
+        <button type="button" onclick="selectToken()">Select Token</button>
+        <button type="button" id="switchTokenButton" onclick="switchToken()">Switch Token</button>
+    </div>
+
+    <div id="chatUI" class="chat-ui">
+        <div class="chat-content">
+            <h1>Live Chat</h1>
+            <button class="back-to-main-btn" onclick="backToMain()">Back to Main</button>
+            <div class="chat-container" id="chatContainer">
+            </div>
+            <div class="message-input">
+                <textarea id="chatMessage" placeholder="Type your message here..." rows="2"></textarea>
+                <button type="button" onclick="sendChatMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="invalidKeyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>Invalid token or error occurred.</p>
+            <input type="text" id="loginKey" placeholder="Enter token again">
+            <button type="button" onclick="retryToken()">Retry</button>
+        </div>
+    </div>
+
+    <div id="welcomeScreen" class="welcome-screen hidden">
+        <h1>Welcome, <span id="usernameDisplay">User</span>!</h1>
+        <p>Loading your dashboard...</p>
+    </div>
+
+    <div class="container hidden" id="mainContainer">
+        <h1>tosencord</h1>
+        <div class="main-content">
+            <div class="input-container">
+                <form id="Cocaine/TosenCordForm" onsubmit="sendMessage(); return false;" class="form-container">
+                    <input type="text" id="channelId" placeholder="Enter Channel ID" required>
+                    <textarea id="message" placeholder="Enter messages separated by new lines" rows="5" required></textarea>
+                    <input type="text" id="userIdInput" placeholder="User ID">
+                    <input type="text" id="emoji" placeholder="Enter Aftermessage">
+                    <div class="slider-container">
+                        <label for="delaySlider">Delay: <span id="delayValue">0.1</span> seconds</label>
+                        <input type="range" id="delaySlider" class="slider" min="0.1" max="10" step="0.1" value="0.1">
+                    </div>
+                    
+                    <div class="message-input">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="hashtagCheckbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <button type="button" onclick="sendMessage()">Send Message</button>
+                    </div>
+                </form>
+            </div>
+            <button class="go-to-chat-btn" onclick="goToChat()">Go to Live Chat</button>
+            <button class="switch-token-btn" onclick="switchToken()">Switch Token</button>
+            <button class="gc-ladder-btn" onclick="showGcLadder()">GC Ladder</button>
+           
+        </div>
+    </div>
+
+    <div id="gcLadderUI" class="container hidden">
+        <h1>Group Chat Ladder</h1>
+        <div class="form-container">
+            <input type="text" id="gcChannelId" placeholder="Enter Group Chat Channel ID" required>
+            <input type="text" id="gcNameInput" placeholder="Enter new group chat name">
+            <button type="button" onclick="changeGroupChatName()">Change Name</button>
+        </div>
+        <div class="current-name">
+            <h2>Current Name: <span id="currentGcName">Loading...</span></h2>
+        </div>
+        <div class="button-container">
+            <button class="back-to-main-btn" onclick="backToMain()">Back to Main</button>
+        </div>
+    </div>
+
+    
+    <div id="altswitcherUI" class="container hidden">
+            <h1>Alt Switcher</h1>
+            <input id="numTokensInput" class="input" type="number" min="1" max="20" placeholder="Enter number of tokens">
+            <button id="setTokensButton">Set Tokens</button>
+            <div id="tokenInputsContainer"></div>
+            <input id="channelIdInput" class="input" type="text" placeholder="Enter Channel ID">
+            <input id="messageInput" class="input" type="text" placeholder="Enter your message">
+            <label for="caseOption">Choose case:</label>
+            <select id="caseOption" class="input">
+                <option value="lower">Lowercase</option>
+                <option value="upper">Uppercase</option>
+            </select>
+            <div>
+                <label for="customMessageInput">Custom Message:</label>
+                <input id="customMessageInput" class="input" type="text" placeholder="Enter custom message">
+            </div>
+            <div>
+                <label for="customMessage2Input">Custom Message 2:</label>
+                <input id="customMessage2Input" class="input" type="text" placeholder="Enter custom message 2">
+            </div>
+            <button id="sendMessageButton">Send Message</button>
+            <div>
+                <label for="messageCountSlider">Messages to send at once: </label>
+                <input type="range" id="messageCountSlider" min="1" max="11" value="3">
+                <span id="sliderValue">3</span>
+            </div>
+            <div id="messageBox" class="message"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        let discordToken = '';
+        let tokens = [];
+        let userId = '';
+        let tokensin = [];
+        let currentTokenIndex = 0;
+        let channelId;
+        let messageQueue = [];
+        let messagesToSendAtOnce = 3;
+        let instantMessages = false;
+
+        document.getElementById('setTokensButton').addEventListener('click', () => {
+            setTokens();
+        });
+
+        document.getElementById('sendMessageButton').addEventListener('click', () => {
+            sendMessageFromInput();
+        });
+
+        document.getElementById('messageInput').addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessageFromInput();
+            }
+        });
+
+        document.getElementById('messageCountSlider').addEventListener('input', (event) => {
+            messagesToSendAtOnce = event.target.value;
+            if (messagesToSendAtOnce == 11) {
+                instantMessages = true;
+                document.getElementById('sliderValue').textContent = "0 delay messages instant and quick";
+            } else {
+                instantMessages = false;
+                document.getElementById('sliderValue').textContent = messagesToSendAtOnce;
+            }
+        });
+
+        function setTokens() {
+            const numTokens = parseInt(document.getElementById('numTokensInput').value);
+            if (numTokens > 0 && numTokens <= 20) {
+                tokensin = [];
+                const container = document.getElementById('tokenInputsContainer');
+                container.innerHTML = '';
+                for (let i = 0; i < numTokens; i++) {
+                    const input = document.createElement('input');
+                    input.className = 'input';
+                    input.type = 'text';
+                    input.placeholder = `Enter token ${i + 1}`;
+                    container.appendChild(input);
+                }
+            } else {
+                showMessageBox("Please enter a number between 1 and 20.", "error");
+            }
+        }
+
+        function sendMessageFromInput() {
+            let message = document.getElementById('messageInput').value.trim();
+            if (message) {
+                let caseOption = document.getElementById('caseOption').value;
+                if (caseOption === 'upper') {
+                    message = message.toUpperCase();
+                } else {
+                    message = message.toLowerCase();
+                }
+
+                const tokenInputs = document.querySelectorAll('#tokenInputsContainer .input');
+                tokensin = Array.from(tokenInputs).map(input => input.value.trim()).filter(token => token);
+
+                channelId = document.getElementById('channelIdInput').value.trim();
+                if (tokensin.length > 0 && channelId) {
+                    const customMessage = document.getElementById('customMessageInput').value.trim();
+                    const customMessage2 = document.getElementById('customMessage2Input').value.trim();
+
+                    addToMessageQueue(message, customMessage, customMessage2);
+                    document.getElementById('messageInput').value = '';
+                } else {
+                    showMessageBox("Please enter valid tokens and channel ID.", "error");
+                }
+            } else {
+                showMessageBox("Please enter a message.", "error");
+            }
+        }
+
+        function addToMessageQueue(message, customMessage, customMessage2) {
+            if (customMessage) {
+                message = `${customMessage} ${message}`;
+            }
+            if (customMessage2) {
+                message = `${message} ${customMessage2}`;
+            }
+            messageQueue.push(message);
+            if (instantMessages) {
+                sendQueuedMessagesInstant();
+            } else if (messageQueue.length >= messagesToSendAtOnce) {
+                sendQueuedMessages();
+            }
+        }
+
+        async function sendQueuedMessages() {
+            for (const message of messageQueue) {
+                await sendMessage(tokensin[currentTokenIndex], channelId, message);
+            }
+            messageQueue = [];
+        }
+
+        async function sendQueuedMessagesInstant() {
+            for (const message of messageQueue) {
+                sendMessage(tokensin[currentTokenIndex], channelId, message);
+            }
+            messageQueue = [];
+        }
+
+        async function sendMessage(token, channelId, message) {
+            try {
+                const response = await fetch(`https://discord.com/api/v9/channels/${channelId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content: message })
+                });
+
+                if (!response.ok) {
+                    if (response.status === 429) {
+                        console.error(`Rate limited: ${message}`);
+                        switchToken();
+                        await sendMessage(tokens[currentTokenIndex], channelId, message);
+                    } else {
+                        console.error(`Failed to send message: ${message}`);
+                    }
+                }
+            } catch (error) {
+                console.error(`Failed to send message: ${message}`);
+            }
+        }
+
+        function switchToken() {
+            if (tokensin.length > 0) {
+                currentTokenIndex = (currentTokenIndex + 1) % tokensin.length;
+                showMessageBox(`Switched to token ${currentTokenIndex + 1}`, "success");
+            }
+        }
+
+        function showMessageBox(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.className = `message ${type}`;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 3000);
+        }
+        
+
+        function storeToken() {
+            const token = document.getElementById('discordToken').value.trim();
+            if (token && !tokens.includes(token)) {
+                tokens.push(token);
+                updateTokenList();
+                alert('Token stored successfully.');
+            }
+        }
+
+        function updateTokenList() {
+            const selectToken = document.getElementById('selectToken');
+            selectToken.innerHTML = '';
+            tokens.forEach((token, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = token;
+                selectToken.appendChild(option);
+            });
+        }
+
+        function selectToken() {
+            const selectToken = document.getElementById('selectToken');
+            const selectedIndex = selectToken.value;
+            if (selectedIndex >= 0 && selectedIndex < tokens.length) {
+                discordToken = tokens[selectedIndex];
+                document.getElementById('tokenContainer').classList.add('hidden');
+                document.getElementById('storedTokensContainer').classList.add('hidden');
+                showWelcomeScreen();
+            } else {
+                alert('Please select a valid token.');
+            }
+        }
+
+        function switchToken() {
+             discordToken = '';
+             document.getElementById('mainContainer').classList.add('hidden');
+             document.getElementById('chatUI').classList.remove('show');
+             document.getElementById('storedTokensContainer').classList.add('show');
+             document.getElementById('gcLadderUI').classList.add('hidden');
+
+    
+             document.getElementById('tokenContainer').classList.remove('hidden');
+        }
+
+
+        function enterToken() {
+            discordToken = document.getElementById('discordToken').value.trim();
+            if (discordToken) {
+                document.getElementById('tokenContainer').classList.add('hidden');
+                document.getElementById('storedTokensContainer').classList.add('hidden');
+                document.getElementById('mainContainer').classList.add('show')
+                showWelcomeScreen();
+            } else {
+                alert('Please enter a valid Discord token.');
+            }
+        }
+
+        function toggleTokenVisibility() {
+            const tokenInput = document.getElementById('discordToken');
+            const tokenText = document.getElementById('tokenText');
+            const showButton = document.getElementById('showTokenButton');
+
+            if (tokenText.style.display === 'none') {
+                tokenText.style.display = 'block';
+                tokenText.innerText = tokenInput.value;
+                tokenInput.style.display = 'none';
+                showButton.innerText = 'Hide Token';
+            } else {
+                tokenText.style.display = 'none';
+                tokenInput.style.display = 'block';
+                showButton.innerText = 'Show Token';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('invalidKeyModal').classList.remove('show');
+            document.getElementById('loginKey').focus();
+        }
+
+        const delaySlider = document.getElementById('delaySlider');
+        const delayValue = document.getElementById('delayValue');
+
+        delaySlider.oninput = function () {
+            delayValue.innerText = this.value;
+        }
+
+        function sendMessage() {
+            const channelId = document.getElementById('channelId').value;
+            const message = document.getElementById('message').value;
+            const emoji = document.getElementById('emoji').value.trim();
+            const userIdInput = document.getElementById('userIdInput').value.trim();
+            const chatMessageInput = document.getElementById('message');
+
+            if (discordToken && channelId && message) {
+                const messages = message.split('\n');
+                const delay = delaySlider.value * 1000;
+                const hashtagChecked = document.getElementById('hashtagCheckbox').checked;
+
+                messages.forEach((msg, index) => {
+                    setTimeout(() => {
+                        let finalMessage = '';
+
+                        if (hashtagChecked) {
+                            finalMessage += '# ';
+                        }
+
+                        if (userIdInput && !userIdInput.startsWith('<@')) {
+                            finalMessage += `<@${userIdInput}> `;
+                        }
+
+
+
+                        finalMessage += msg;
+
+                        if (emoji) {
+                            finalMessage += ` ${emoji}`;
+                        }
+
+                        fetch(`https://discord.com/api/v9/channels/${channelId}/messages`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': discordToken,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ content: finalMessage })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.id) {
+                                    fetchMessages();
+                                }
+                            })
+                            .catch(error => console.error('error:', error));
+                    }, index * delay);
+                });
+
+                chatMessageInput.value = '';
+            }
+        }
+
+        function sendChatMessage() {
+            const channelId = document.getElementById('channelId').value;
+            const message = document.getElementById('chatMessage').value.trim();
+            const emoji = document.getElementById('emoji').value.trim();
+            const userIdInput = document.getElementById('userIdInput').value.trim(); 
+            const chatMessageInput = document.getElementById('chatMessage');
+            const hashtagChecked = document.getElementById('hashtagCheckbox').checked;
+
+            if (discordToken && channelId && message) {
+                let finalMessage = '';
+
+                if (hashtagChecked) {
+                    finalMessage += '# ';
+                }
+
+                if (userIdInput && !userIdInput.startsWith('<@')) {
+                    finalMessage += `<@${userIdInput}> `;
+                }
+
+
+                finalMessage += message;
+
+                if (emoji) {
+                    finalMessage += ` ${emoji}`;
+                }
+
+                chatMessageInput.value = '';
+
+                fetch(`https://discord.com/api/v9/channels/${channelId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': discordToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content: finalMessage })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.id) {
+                            fetchMessages();
+                        }
+                    })
+                    .catch(error => console.error('error:', error));
+            }
+        }
+
+        function fetchMessages() {
+            const channelId = document.getElementById('channelId').value;
+
+            if (discordToken && channelId) {
+                fetch(`https://discord.com/api/v9/channels/${channelId}/messages?limit=50`, {
+                    headers: {
+                        'Authorization': discordToken
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const chatContainer = document.getElementById('chatContainer');
+                        chatContainer.innerHTML = '';
+                        data.reverse().forEach(message => {
+                            const msgElement = document.createElement('div');
+                            msgElement.classList.add('message');
+                            const senderName = message.author.username;
+                            msgElement.innerHTML = `<span class="sender">${senderName}:</span> ${message.content}`;
+                            chatContainer.appendChild(msgElement);
+                        });
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    })
+                    .catch(error => console.error('error:', error));
+            }
+        }
+
+        document.getElementById('chatMessage').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        });
+
+        function fetchUserProfile() {
+            fetch('https://discord.com/api/v9/users/@me', {
+                headers: {
+                    'Authorization': discordToken
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('usernameDisplay').innerText = data.username;
+                    userId = data.id;
+                    showWelcomeScreen();
+                })
+                .catch(error => console.error('error:', error));
+        }
+
+        function showWelcomeScreen() {
+            document.getElementById('welcomeScreen').classList.remove('hidden');
+            document.getElementById('mainContainer').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('welcomeScreen').classList.add('fade-out');
+                setTimeout(() => {
+                    document.getElementById('welcomeScreen').classList.add('hidden');
+                    document.getElementById('mainContainer').classList.remove('hidden');
+                    fetchMessages(); 
+                }, 2000); 
+            }, 2000); 
+        }
+
+        function goToChat() {
+            document.getElementById('mainContainer').classList.add('hidden');
+            document.getElementById('chatUI').classList.add('show');
+            document.getElementById('chatUI').scrollIntoView({ behavior: 'smooth' });
+            fetchMessages(); 
+        }
+
+        function backToMain() {
+            document.getElementById('chatUI').classList.remove('show');
+            document.getElementById('gcLadderUI').classList.add('hidden');
+            document.getElementById('mainContainer').classList.remove('hidden');
+            
+        }
+
+        document.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+        });
+
+        
+        document.addEventListener('keydown', function (event) {
+            const shortcuts = [
+                'S', 'P', 'C', 'U', 'I', 'A', 'F12'
+            ];
+
+            if (event.ctrlKey || event.metaKey || event.shiftKey) {
+                if (shortcuts.includes(event.key.toUpperCase()) || (event.key === 'F12')) {
+                    event.preventDefault();
+                }
+            }
+
+            if (event.key === 'F12') {
+                event.preventDefault();
+            }
+        });
+        
+        
+        async function fetchGroupChatName() {
+    const channelId = document.getElementById('gcChannelId').value.trim();
+
+    if (discordToken && channelId) {
+        try {
+            const response = await fetch(`https://discord.com/api/v9/channels/${channelId}`, {
+                headers: {
+                    'Authorization': discordToken
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('currentGcName').innerText = data.name;
+            } else {
+                console.error('Failed to fetch group chat name');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
+
+
+function showGcLadder() {
+    document.getElementById('mainContainer').classList.add('hidden');
+    document.getElementById('gcLadderUI').classList.remove('hidden');
+    fetchGroupChatName(); 
+}
+
+
+async function changeGroupChatName() {
+    const channelId = document.getElementById('gcChannelId').value.trim();
+    const newName = document.getElementById('gcNameInput').value.trim();
+
+    document.getElementById('gcNameInput').value = '';
+
+    if (discordToken && channelId && newName) {
+        try {
+            const response = await fetch(`https://discord.com/api/v9/channels/${channelId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': discordToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: newName })
+            });
+
+            if (response.ok) {
+                console.log('GC name changed');
+                fetchGroupChatName(); 
+            } else {
+                console.error('Failed to change GC name');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
+    document.getElementById('gcNameInput').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            requestAnimationFrame(() => changeGroupChatName());
+        }
+    });
+
+        function goToAltSwitcher() {
+            document.getElementById('mainContainer').classList.add('hidden');
+            document.getElementById('gcLadderUI').classList.add('hidden');
+            document.getElementById('chatUI').classList.add('hidden');
+            document.getElementById('altswitcherUI').classList.remove('hidden');
+        }
+
+        
+    </script>
+</body>
+</html>
