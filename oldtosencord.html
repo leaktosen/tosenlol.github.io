@@ -555,13 +555,15 @@
             if (discordToken && channelId && message) {
                 let finalMessage = '';
 
+                if (hashtagChecked) {
+                    finalMessage += '# ';
+                }
+
                 if (userIdInput && !userIdInput.startsWith('<@')) {
                     finalMessage += `<@${userIdInput}> `;
                 }
 
-                if (hashtagChecked) {
-                    finalMessage += '# ';
-                }
+                
 
                 finalMessage += message;
 
@@ -666,14 +668,15 @@ function sendAutotyperMessage(word) {
 
     tokens.forEach((token) => {
         let finalMessage = '';
+        if (hashtagChecked) {
+            finalMessage += '# ';
+        }
 
         if (userIdInput && !userIdInput.startsWith('<@')) {
             finalMessage += `<@${userIdInput}> `;
         }
 
-        if (hashtagChecked) {
-            finalMessage += '# ';
-        }
+        
 
         finalMessage += word;
 
@@ -732,13 +735,15 @@ function sendSpamMessage() {
     if (discordToken && channelId && spamMessage) {
         let finalMessage = '';
 
+        if (hashtagChecked) {
+            finalMessage += '# ';
+        }
+
         if (userIdInput && !userIdInput.startsWith('<@')) {
             finalMessage += `<@${userIdInput}> `;
         }
 
-        if (hashtagChecked) {
-            finalMessage += '# ';
-        }
+        
 
         finalMessage += spamMessage;
 
