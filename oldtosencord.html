@@ -504,13 +504,16 @@
                     setTimeout(() => {
                         let finalMessage = '';
 
-                        if (userIdInput && !userIdInput.startsWith('<@')) {
-                            finalMessage += `<@${userIdInput}> `;
-                        }
 
                         if (hashtagChecked) {
                             finalMessage += '# ';
                         }
+
+                        if (userIdInput && !userIdInput.startsWith('<@')) {
+                            finalMessage += `<@${userIdInput}> `;
+                        }
+
+                        
 
                         finalMessage += msg;
 
