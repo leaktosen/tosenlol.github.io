@@ -349,6 +349,7 @@
                         <button type="button" id="autotyperButton" onclick="startAutotyper()">Autotyper</button>
     <input type="file" id="autotyperFile" style="display: none;">
     <button type="button" id="loadAutotyperFileButton" onclick="loadAutotyperFile()">Load File</button>
+    
                     </div>
                 </form>
             </div>
@@ -357,6 +358,10 @@
         </div>
         <div class="message-input">
                 <textarea id="chatMessage" placeholder="Type your message here..." rows="2"></textarea>
+                <label class="custom-checkbox">
+                    <input type="checkbox" id="useSpacesAsNewlinesCheckbox">
+                    <span class="checkmark"></span>
+                </label>
                 <button type="button" id="spamButton" onclick="startSpamming()">Spam</button>
                 <button type="button" id="stopSpamButton" onclick="stopSpamming()" style="display: none;">Stop Spam</button>
                 <button type="button" id="switchTokenButton" onclick="switchToken()">Switch Token</button>
@@ -504,16 +509,13 @@
                     setTimeout(() => {
                         let finalMessage = '';
 
-
-                        if (hashtagChecked) {
-                            finalMessage += '# ';
-                        }
-
                         if (userIdInput && !userIdInput.startsWith('<@')) {
                             finalMessage += `<@${userIdInput}> `;
                         }
 
-                        
+                        if (hashtagChecked) {
+                            finalMessage += '# ';
+                        }
 
                         finalMessage += msg;
 
@@ -545,52 +547,53 @@
         }
 
         function sendChatMessage() {
-            const channelId = document.getElementById('channelId').value;
-            const message = document.getElementById('chatMessage').value.trim();
-            const emoji = document.getElementById('emoji').value.trim();
-            const userIdInput = document.getElementById('userIdInput').value.trim(); 
-            const chatMessageInput = document.getElementById('chatMessage');
-            const hashtagChecked = document.getElementById('hashtagCheckbox').checked;
+    const channelId = document.getElementById('channelId').value;
+    const message = document.getElementById('chatMessage').value.trim();
+    const useSpacesAsNewlinesCheckbox = document.getElementById('useSpacesAsNewlinesCheckbox').checked;
+    const emoji = document.getElementById('emoji').value.trim();
+    const userIdInput = document.getElementById('userIdInput').value.trim(); 
+    const hashtagChecked = document.getElementById('hashtagCheckbox').checked;
 
-            if (discordToken && channelId && message) {
-                let finalMessage = '';
+    if (discordToken && channelId && message) {
+        let finalMessage = '';
 
-                if (hashtagChecked) {
-                    finalMessage += '# ';
-                }
-
-                if (userIdInput && !userIdInput.startsWith('<@')) {
-                    finalMessage += `<@${userIdInput}> `;
-                }
-
-                
-
-                finalMessage += message;
-
-                if (emoji) {
-                    finalMessage += ` ${emoji}`;
-                }
-
-                chatMessageInput.value = '';
-
-                fetch(`https://discord.com/api/v9/channels/${channelId}/messages`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': discordToken,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ content: finalMessage })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.id) {
-                            fetchMessages();
-                        }
-                    })
-                    .catch(error => console.error('Error sending message:', error));
-            }
+        if (userIdInput && !userIdInput.startsWith('<@')) {
+            finalMessage += `<@${userIdInput}> `;
         }
 
+        if (hashtagChecked) {
+            finalMessage += '# ';
+        }
+
+        if (useSpacesAsNewlinesCheckbox) {
+            finalMessage += message.replace(/ /g, '\n');
+        } else {
+            finalMessage += message;
+        }
+
+        if (emoji) {
+            finalMessage += ` ${emoji}`;
+        }
+
+        document.getElementById('chatMessage').value = '';
+
+        fetch(`https://discord.com/api/v9/channels/${channelId}/messages`, {
+            method: 'POST',
+            headers: {
+                'Authorization': discordToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ content: finalMessage })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    fetchMessages();
+                }
+            })
+            .catch(error => console.error('Error sending message:', error));
+    }
+}
         function fetchMessages() {
             const channelId = document.getElementById('channelId').value;
 
@@ -650,6 +653,11 @@ function startAutotyper() {
         if (autotyperWords.length === 0) {
             return;
         }
+    
+        for (let i = autotyperWords.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [autotyperWords[i], autotyperWords[j]] = [autotyperWords[j], autotyperWords[i]];
+        }
         autotyperIndex = 0;
         autotyperInterval = setInterval(() => {
             const word = autotyperWords[autotyperIndex];
@@ -661,47 +669,45 @@ function startAutotyper() {
 }
 
 function sendAutotyperMessage(word) {
-    const channelId = document.getElementById('channelId').value;
-    const userIdInput = document.getElementById('userIdInput').value.trim();
-    const emoji = document.getElementById('emoji').value.trim();
-    const hashtagChecked = document.getElementById('hashtagCheckbox').checked;
+  const channelId = document.getElementById('channelId').value;
+  const userIdInput = document.getElementById('userIdInput').value.trim();
+  const emoji = document.getElementById('emoji').value.trim();
+  const hashtagChecked = document.getElementById('hashtagCheckbox').checked;
 
-    tokens.forEach((token) => {
-        let finalMessage = '';
-        if (hashtagChecked) {
-            finalMessage += '# ';
+  tokens.forEach((token) => {
+    let finalMessage = '';
+
+    if (hashtagChecked) {
+      finalMessage += '# ';
+    }
+
+    if (userIdInput && !userIdInput.startsWith('<@')) {
+      finalMessage += `<@${userIdInput}> `;
+    }
+
+    finalMessage += autotyperWords[Math.floor(Math.random() * autotyperWords.length)];
+
+    if (emoji) {
+      finalMessage += ` ${emoji}`;
+    }
+
+    fetch(`https://discord.com/api/v9/channels/${channelId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ content: finalMessage })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.id) {
+          fetchMessages();
         }
-
-        if (userIdInput && !userIdInput.startsWith('<@')) {
-            finalMessage += `<@${userIdInput}> `;
-        }
-
-        
-
-        finalMessage += word;
-
-        if (emoji) {
-            finalMessage += ` ${emoji}`;
-        }
-
-        fetch(`https://discord.com/api/v9/channels/${channelId}/messages`, {
-            method: 'POST',
-            headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ content: finalMessage })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.id) {
-                    fetchMessages();
-                }
-            })
-            .catch(error => console.error('Error sending autotyper message:', error));
-    });
+      })
+      .catch(error => console.error('Error sending autotyper message:', error));
+  });
 }
-
 
 function startSpamming() {
     if (spamInterval) {
@@ -735,15 +741,13 @@ function sendSpamMessage() {
     if (discordToken && channelId && spamMessage) {
         let finalMessage = '';
 
-        if (hashtagChecked) {
-            finalMessage += '# ';
-        }
-
         if (userIdInput && !userIdInput.startsWith('<@')) {
             finalMessage += `<@${userIdInput}> `;
         }
 
-        
+        if (hashtagChecked) {
+            finalMessage += '# ';
+        }
 
         finalMessage += spamMessage;
 
