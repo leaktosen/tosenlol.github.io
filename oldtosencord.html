@@ -6,300 +6,355 @@
     <title>tosencord</title>
     <style>
          body {
-            display: flex;
-            justify-content: center;
-            align-items: center; 
-            min-height: 100vh; 
-            background-color: #1f1f1f;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            margin: 0;
-        }
-
-        .container {
-            text-align: center;
-            background-color: #1f1f1f;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            width: 800px;
-            animation: fade-in 0.5s ease-out;
-        }
-        .login-container {
-            width: 400px;
-        }
-        @keyframes fade-in {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            color: #ffffff;
-        }
-        input, button, textarea {
-            display: block;
-            width: calc(100% - 30px);
-            margin: 15px auto;
-            padding: 15px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
-            background-color: #0f0f0f;
-            color: #fff;
-        }
-        button {
-            background-color: #111111;
-            cursor: pointer;
-            
-        }
-        button:hover {
-            background-color: #0a0a0a;
-        }
-        .slider-container {
-            margin: 20px auto;
-            width: calc(100% - 30px);
-            text-align: center;
-        }
-        .slider {
-            width: calc(100% - 30px);
-            -webkit-appearance: none;
-            appearance: none;
-            height: 15px;
-            background: #050505;
-            outline: none;
-            opacity: 0.7;
-            transition: opacity 0.2s;
-            border-radius: 5px;
-        }
-        .slider:hover {
-            opacity: 1;
-        }
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 25px;
-            height: 25px;
-            background: #fff;
-            cursor: pointer;
-            border-radius: 50%;
-            border: 2px solid #050505;
-        }
-        .slider::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
-            background: #fff;
-            cursor: pointer;
-            border-radius: 50%;
-            border: 2px solid #050505;
-        }
-        .hidden {
-            display: none;
-        }
-        .chat-container {
-            text-align: left;
-            background-color: #0f0f0f;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            max-height: 300px;
-            margin-bottom: 20px;
-            width: calc(100% - 30px);
-            position: relative;
-            right: 0;
-            float: right;
-            overflow: hidden;
-        }
-        .message {
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #23272a;
-            border-radius: 5px;
-        }
-        .message.user {
-            background-color: #ffffff;
-        }
-
-   
-        .message .sender {
-            font-weight: bold;
-            color:  #ffffff ;
-            word-break: break-all; 
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            z-index: 1000;
-            animation: pop-up 0.3s ease-out;
-        }
-        @keyframes pop-up {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .modal.show {
-            display: block;
-        }
-        .modal-content {
-            text-align: center;
-        }
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            color: #fff;
-            font-size: 1.2em;
-        }
-        .main-content {
-            display: flex;
-            justify-content: space-between;
-        }
-        .input-container {
-            width: 45%;
-        }
-        .chat-container {
-            width: 45%;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .message-input {
-            display: flex;
-            align-items: center;
-        }
-        .message-input textarea {
-            flex-grow: 1;
-            margin-right: 10px;
-        }
-
-        .message-input button {
-            margin-right: 10px;
-        }
-        button#showTokenButton {
-            font-size: 0.8em;
-            padding: 8px 12px;
-            width: auto;
-        }
-        .custom-checkbox {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            background-color: #2c2f33;
-            border-radius: 5px;
-            border: 2px solid #fff;
-            cursor: pointer;
-            vertical-align: middle;
-            margin-right: 10px;
-        }
-        .custom-checkbox input[type="checkbox"] {
-            display: none;
-        }
-        .custom-checkbox input[type="checkbox"]:checked + .checkmark {
-            background-color: #ffffff;
-        }
-        .custom-checkbox .checkmark {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border-radius: 3px;
-            background-color: transparent;
-            transition: background-color 0.3s ease;
-        }
-        .custom-checkbox .checkmark:after {
-            content: '';
-            display: block;
-            width: 5px;
-            height: 10px;
-            border: solid #fff;
-            border-width: 0 3px 3px 0;
-            transform: rotate(45deg);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .custom-checkbox input[type="checkbox"]:checked + .checkmark:after {
-            opacity: 1;
-        }
-        
-::-webkit-scrollbar {
-  width: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    min-height: 100vh; 
+    background-color: #1f1f1f;
+    color: #ed820e;
+    font-family: Arial, sans-serif;
+    margin: 0;
 }
 
-
-::-webkit-scrollbar-track {
-  border-radius: 10px;
-}
- 
-
-::-webkit-scrollbar-thumb {
-  background: #1f1f1f; 
-  border-radius: 10px;
-}
-
-
-::-webkit-scrollbar-thumb:hover {
-  background: #1f1f1f; 
+.container {
+    text-align: center;
+    background-color: #1f1f1f;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 166, 0, 0.26);
+    width: 800px;
+    animation: fade-in 0.5s ease-out;
 }
 
-        
-        .store-container {
-            text-align: center;
-            background-color: #1f1f1f;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            width: 800px;
-            animation: fade-in 0.5s ease-out;
-            position: absolute;
-            top: 70%;
-        }
+.login-container {
+    width: 400px;
+}
 
-        .token-container {
-            text-align: center;
-            background-color: #1f1f1f;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            width: 800px;
-            animation: fade-in 0.5s ease-out;
-            position: relative;
-            top: 100%;
-        }
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-        .profile-container button#switchTokenButton {
-              font-size: 0.8em;
-              padding: 8px 12px;
-              width: auto;
-              margin-top: 10px; 
-              display: block; 
-              background-color: #111111;
-              cursor: pointer;
-         }
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #ed820e;
+}
 
-        .profile-container button#switchTokenButton:hover {
-              background-color: #0a0a0a;
-        }
+input, button, textarea {
+    display: block;
+    width: calc(100% - 30px);
+    margin: 15px auto;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    background-color: #0f0f0f;
+    color: #ed820e;
+    box-shadow: 0 0 10px rgba(255, 166, 0, 0.1) inset, 0 0 10px rgba(255, 166, 0, 0.1); 
+}
 
-        .message-input button#switchTokenButton {
-           font-size: 0.8em;
-           padding: 8px 12px;
-           width: auto;
-           margin-top: 10px; 
-           margin-left: 10px;  
-           display: inline-block; 
-           background-color: #111111;
-           cursor: pointer;
-        }
+input:focus, textarea:focus {
+    box-shadow: 0 0 10px rgba(255, 166, 0, 0.2) inset, 0 0 10px rgba(255, 166, 0, 0.2); 
+}
+
+button {
+    background-color: #111111;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0a0a0a;
+}
+
+.slider-container {
+    margin: 20px auto;
+    width: calc(100% - 30px);
+    text-align: center;
+}
+
+.slider {
+    width: calc(100% - 30px);
+    -webkit-appearance: none;
+    appearance: none;
+    height: 15px;
+    background: #050505;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    border-radius: 5px;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #ed820e;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid #050505;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #ed820e;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid #050505;
+}
+
+.hidden {
+    display: none;
+}
+
+.chat-container {
+    text-align: left;
+    background-color: #0f0f0f;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 166, 0, 0.26);
+    max-height: 300px;
+    margin-bottom: 20px;
+    width: calc(100% - 30px);
+    position: relative;
+    right: 0;
+    float: right;
+    overflow: hidden;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #23272a;
+    border-radius: 5px;
+}
+
+.message.user {
+    background-color: #ed820e;
+}
+
+.message .sender {
+    font-weight: bold;
+    color: #ed820e;
+    word-break: break-all; 
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #ed820e;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    animation: pop-up 0.3s ease-out;
+}
+
+@keyframes pop-up {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: #ed820e;
+    font-size: 1.2em;
+}
+
+.main-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-container {
+    width: 45%;
+}
+
+.chat-container {
+    width: 45%;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.message-input {
+    display: flex;
+    align-items: center;
+}
+
+.message-input textarea {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.message-input button {
+    margin-right: 10px;
+}
+
+button#showTokenButton {
+    font-size: 0.8em;
+    padding: 8px 12px;
+    width: auto;
+    margin-top: 10px; 
+    display: block; 
+    background-color: #111111;
+    cursor: pointer;
+}
+
+button#showTokenButton:hover {
+    background-color: #0a0a0a;
+}
+
+.message-input button#switchTokenButton {
+    font-size: 0.8em;
+    padding: 8px 12px;
+    width: auto;
+    margin-top: 10px; 
+    margin-left: 10px;  
+    display: inline-block; 
+    background-color: #111111;
+    cursor: pointer;
+}
 
 .profile-container button#switchTokenButton:hover {
     background-color: #0a0a0a;
 }
 
+.custom-checkbox {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #2c2f33;
+    border-radius: 5px;
+    border: 2px solid #fff;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark {
+    background-color: #ffffff;
+}
+
+.custom-checkbox .checkmark {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+}
+
+.custom-checkbox .checkmark:after {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark:after {
+    opacity: 1;
+}
+
+::-webkit-scrollbar {
+    width: 20px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1f1f1f; 
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1f1f1f; 
+}
+
+.store-container {
+    text-align: center;
+    background-color: #1f1f1f;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 166, 0, 0.26);
+    width: 800px;
+    animation: fade-in 0.5s ease-out;
+    position: absolute;
+    top: 70%;
+    margin-top: 50px;
+}
+
+.token-container {
+    text-align: center;
+    background-color: #1f1f1f;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 166, 0, 0.26);
+    width: 800px;
+    animation: fade-in 0.5s ease-out;
+    position: relative;
+    top: 100%;
+    margin-bottom: 30px;
+}
+
+.profile-container button#switchTokenButton {
+    font-size: 0.8em;
+    padding: 8px 12px;
+    width: auto;
+    margin-top: 10px; 
+    display: block; 
+    background-color: #111111;
+    cursor: pointer;
+}
+
+.profile-container button#switchTokenButton:hover {
+    background-color: #0a0a0a;
+}
+
+.message-input button#switchTokenButton {
+    font-size: 0.8em;
+    padding: 8px 12px;
+    width: auto;
+    margin-top: 10px; 
+    margin-left: 10px;  
+    display: inline-block; 
+    background-color: #111111;
+    cursor: pointer;
+}
+
+.profile-container button#switchTokenButton:hover {
+    background-color: #0a0a0a;
+}
     </style>
 </head>
 <body>
@@ -315,6 +370,8 @@
             <button type="button" id="showTokenButton" onclick="toggleTokenVisibility()">Show Token</button>
             <div id="tokenText" style="display: none;"></div>
             <button type="button" onclick="enterToken()">Enter Token</button>
+            <input type="file" id="tokenFile" accept=".txt">
+            <button type="button" id="uploadTokenButton" onclick="uploadTokens()">Upload Tokens</button>
         </form>
     </div>
 
@@ -350,6 +407,7 @@
     <input type="file" id="autotyperFile" style="display: none;">
     <button type="button" id="loadAutotyperFileButton" onclick="loadAutotyperFile()">Load File</button>
     
+    
                     </div>
                 </form>
             </div>
@@ -362,6 +420,8 @@
                     <input type="checkbox" id="useSpacesAsNewlinesCheckbox">
                     <span class="checkmark"></span>
                 </label>
+
+                <input type="text" id="autotyperUserId" placeholder="Autotyper User ID" style="margin-right: 10px;">
                 <button type="button" id="spamButton" onclick="startSpamming()">Spam</button>
                 <button type="button" id="stopSpamButton" onclick="stopSpamming()" style="display: none;">Stop Spam</button>
                 <button type="button" id="switchTokenButton" onclick="switchToken()">Switch Token</button>
@@ -372,7 +432,7 @@
     <div id="invalidKeyModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <p>Invalid Key. Please try again.</p>
+            <p>invalid key</p>
         </div>
     </div>
 
@@ -394,9 +454,27 @@
                 displayStoredTokens();
                 document.getElementById('discordToken').value = '';
             } else {
-                alert('Please enter a valid token.');
+                alert('enter a valid token.');
             }
         }
+
+        function uploadTokens() {
+    const fileInput = document.getElementById('tokenFile');
+    const file = fileInput.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const text = event.target.result;
+            const tokensArray = text.split('\n');
+            tokensArray.forEach((token) => {
+                tokens.push(token.trim());
+            });
+            displayStoredTokens();
+        };
+        reader.readAsText(file);
+    }
+}
 
         
         function displayStoredTokens() {
@@ -436,7 +514,7 @@
                 fetchUserProfile();
                 setInterval(fetchMessages, 5000);
             } else {
-                alert('Please select a valid token.');
+                alert('select a valid token.');
             }
         }
 
@@ -458,7 +536,7 @@
                 fetchUserProfile();
                 setInterval(fetchMessages, 5000);
             } else {
-                alert('Please enter a valid Discord token.');
+                alert('enter a valid Discord token.');
             }
         }
 
@@ -502,20 +580,22 @@
 
             if (discordToken && channelId && message) {
                 const messages = message.split('\n');
-                const delay = delaySlider.value * 100;
+                const delay = delaySlider.value * 1000;
                 const hashtagChecked = document.getElementById('hashtagCheckbox').checked;
 
                 messages.forEach((msg, index) => {
                     setTimeout(() => {
                         let finalMessage = '';
 
+                        if (hashtagChecked) {
+                            finalMessage += '# ';
+                        }
+
                         if (userIdInput && !userIdInput.startsWith('<@')) {
                             finalMessage += `<@${userIdInput}> `;
                         }
 
-                        if (hashtagChecked) {
-                            finalMessage += '# ';
-                        }
+                        
 
                         finalMessage += msg;
 
@@ -537,7 +617,7 @@
                                     fetchMessages();
                                 }
                             })
-                            .catch(error => console.error('Error sending message:', error));
+                            .catch(error => console.error('error sending message:', error));
                     }, index * delay);
                 });
 
@@ -557,13 +637,15 @@
     if (discordToken && channelId && message) {
         let finalMessage = '';
 
+        if (hashtagChecked) {
+            finalMessage += '# ';
+        }
+
         if (userIdInput && !userIdInput.startsWith('<@')) {
             finalMessage += `<@${userIdInput}> `;
         }
 
-        if (hashtagChecked) {
-            finalMessage += '# ';
-        }
+        
 
         if (useSpacesAsNewlinesCheckbox) {
             finalMessage += message.replace(/ /g, '\n');
@@ -616,7 +698,7 @@
                         });
                         chatContainer.scrollTop = chatContainer.scrollHeight;
                     })
-                    .catch(error => console.error('Error fetching messages:', error));
+                    .catch(error => console.error('error fetching messages:', error));
             }
         }
         
@@ -668,46 +750,71 @@ function startAutotyper() {
     }
 }
 
-function sendAutotyperMessage(word) {
-  const channelId = document.getElementById('channelId').value;
-  const userIdInput = document.getElementById('userIdInput').value.trim();
-  const emoji = document.getElementById('emoji').value.trim();
-  const hashtagChecked = document.getElementById('hashtagCheckbox').checked;
-
-  tokens.forEach((token) => {
-    let finalMessage = '';
-
-    if (hashtagChecked) {
-      finalMessage += '# ';
-    }
-
-    if (userIdInput && !userIdInput.startsWith('<@')) {
-      finalMessage += `<@${userIdInput}> `;
-    }
-
-    finalMessage += autotyperWords[Math.floor(Math.random() * autotyperWords.length)];
-
-    if (emoji) {
-      finalMessage += ` ${emoji}`;
-    }
-
-    fetch(`https://discord.com/api/v9/channels/${channelId}/messages`, {
-      method: 'POST',
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ content: finalMessage })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.id) {
-          fetchMessages();
+function startAutotyper() {
+        if (autotyperInterval) {
+            clearInterval(autotyperInterval);
+            autotyperInterval = null;
+            document.getElementById('autotyperButton').innerText = 'Autotyper';
+        } else {
+            if (autotyperWords.length === 0) {
+                return;
+            }
+        
+            for (let i = autotyperWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [autotyperWords[i], autotyperWords[j]] = [autotyperWords[j], autotyperWords[i]];
+            }
+            autotyperIndex = 0;
+            autotyperInterval = setInterval(() => {
+                const word = autotyperWords[autotyperIndex];
+                autotyperIndex = (autotyperIndex + 1) % autotyperWords.length;
+                sendAutotyperMessage(word);
+            }, 750); 
+            document.getElementById('autotyperButton').innerText = 'Stop Autotyper';
         }
-      })
-      .catch(error => console.error('Error sending autotyper message:', error));
-  });
-}
+    }
+
+    function sendAutotyperMessage(word) {
+        const channelId = document.getElementById('channelId').value;
+        const userIdInput = document.getElementById('userIdInput').value.trim();
+        const autotyperUserId = document.getElementById('autotyperUserId').value.trim();
+        const emoji = document.getElementById('emoji').value.trim();
+        const hashtagChecked = document.getElementById('hashtagCheckbox').checked;
+
+        tokens.forEach((token) => {
+            let finalMessage = '';
+
+            if (hashtagChecked) {
+                finalMessage += '# ';
+            }
+
+            if (autotyperUserId && !autotyperUserId.startsWith('<@') && autotyperIndex % 5 === 0) {
+                finalMessage += `<@${autotyperUserId}> `;
+            }
+
+            finalMessage += autotyperWords[Math.floor(Math.random() * autotyperWords.length)];
+
+            if (emoji) {
+                finalMessage += ` ${emoji}`;
+            }
+
+            fetch(`https://discord.com/api/v9/channels/${channelId}/messages`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: finalMessage })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.id) {
+                        fetchMessages();
+                    }
+                })
+                .catch(error => console.error('error sending autotyper message:', error));
+        });
+    }
 
 function startSpamming() {
     if (spamInterval) {
@@ -717,7 +824,7 @@ function startSpamming() {
     if (spamMessage) {
         spamInterval = setInterval(() => {
             sendSpamMessage();
-        }, 100); 
+        }, 250); 
         document.getElementById('spamButton').style.display = 'none';
         document.getElementById('stopSpamButton').style.display = 'block';
     }
@@ -770,7 +877,7 @@ function sendSpamMessage() {
                         fetchMessages();
                     }
                 })
-                .catch(error => console.error('Error sending message:', error));
+                .catch(error => console.error('error sending message:', error));
         });
     }
 }
