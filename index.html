@@ -1,228 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tosen.lol</title>
-    <meta name="description" content="ucantfind.us" />
-    <link rel="stylesheet" href="crt.css">
-    
-    <style>
-        @font-face {
-            font-family: 'VCR_OSD_MONO';
-            src: url('VCR_OSD_MONO_1.001.ttf') format('truetype');
-        }
+  <title>tosen.lol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      text-align: center;
+      font-family: monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: url('cursor.cur'), auto;
+    }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: black;
-            color: white;
-            font-family: 'VCR_OSD_MONO', monospace;
-            overflow: hidden;
-        }
-
-        #bios {
-            display: flex;
-            justify-content: space-between;
-            width: 90%;
-            max-width: 1200px;
-            position: relative;
-            z-index: 1;
-        }
-
-        #textContainer {
-            width: 70%;
-            height: auto; 
-            text-align: left;
-        }
-
-        #textContainer p, #textContainer h1 {
-            margin: 4px 0; 
-            visibility: hidden; 
-            white-space: pre-wrap; 
-            text-shadow: 0 0 1px white;
-            line-height: 1.3;  
-            font-size: 1.5rem; 
-            position: relative;
-            overflow: hidden;
-        }
-
-        #textContainer p, #textContainer h1 {
-            height: 1.5em; 
-        }
-
-        .typing-caret::after {
-            content: '';
-            border-right: 2px solid white;
-            animation: caret 0.7s steps(1) infinite;
-            display: inline-block;
-            vertical-align: bottom;
-            margin-left: 2px;
-        }
-
-        @keyframes caret {
-            50% {
-                border-color: transparent;
-            }
-        }
-
-        #imageContainer {
-            width: 30%;
-            text-align: right;
-        }
-
-        #imageContainer img {
-            width: 100%;
-            height: auto;
-            image-rendering: pixelated;
-        }
-
-        .ok {
-            color: green;
-        }
-
-        .failed {
-            color: red;
-        }
-
-        #loadingScreen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        #loadingScreen.hidden {
-            display: none;
-        }
-
-       
-        .loading-circle {
-            width: 50px;
-            height: 50px;
-            position: relative;
-            transform: rotate(45deg); 
-        }
-
-        .loading-circle::before,
-        .loading-circle::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 8px solid white;
-            border-radius: 50%;
-            box-sizing: border-box;
-            animation: spin 2s linear infinite;
-        }
-
-        .loading-circle::after {
-            border-color: transparent transparent white white;
-            animation-delay: -1s;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-    </style>
+    .text {
+      white-space: pre;
+    }
+  </style>
 </head>
 <body>
-    <div class="crt">
-        <div class="scanlines"></div>
-        
-        <div id="bios">
-            <div id="textContainer">
-                <h1 id="title"></h1>
-                <p id="rights"></p>
-                <p id="poop"></p>
-                <p id="loadingmembers" class="ok"></p>
-                <p id="bootstrapper" class="ok"></p>
-                <p id="pressKeys"></p>
-            </div>
-            <div id="imageContainer">
-                <img src="sem.jpg" alt="Character Image">
-            </div>
-        </div>
-        <div id="loadingScreen" class="hidden">
-            <div class="loading-circle"></div>
-        </div>
+  <div class="text" id="click-to-enter">
+    click here....
+  </div>
 
-        <crt id="crt">   
+  <script>
+    const clickToEnter = document.getElementById('click-to-enter');
+    let text = "click here....";
+    let currentIndex = 0;
 
-        </crt>
+    function typeText() {
+      if (currentIndex < text.length) {
+        clickToEnter.textContent = text.substring(0, currentIndex + 1);
+        currentIndex++;
+        setTimeout(typeText, 50); 
+      }
+    }
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const lines = [
-                    { id: 'title', text: 'tosen', delay: 300 },
-                    { id: 'rights', text: 'tosen.lol (C) est 2024.\n', delay: 1200 },
-                    { id: 'poop', text: '\nloading tosen\n', delay: 800 }, 
-                    { id: 'loadingmembers', text: '\n[ OK ] Loading Socials... ', delay: 800 },
-                    { id: 'bootstrapper', text: '[ OK ] Starting Terminal...\n', delay: 1200 }, 
-                    { id: 'pressKeys', text: '\nPress DEL Key to go to BIOS...\nPress Alt + F4 for a surprise..', delay: 1600 }
-                ];
+    typeText();
 
-                let currentLine = 0;
+    clickToEnter.addEventListener('click', () => {
+      window.location.href = "home.html"; 
+    });
+  </script>
 
-                function typeLine(line) {
-                    const element = document.getElementById(line.id);
-                    const text = line.text;
-                    let index = 0;
-
-                    element.style.visibility = 'visible';
-                    element.style.fontFamily = 'VCR_OSD_MONO'; 
-                    element.style.fontSize = '1.5rem'; 
-                    element.style.height = 'auto'; 
-
-                    function typeCharacter() {
-                        if (index < text.length) {
-                            element.innerHTML = text.slice(0, index + 1) + '<span class="typing-caret"></span>';
-                            index++;
-                            setTimeout(typeCharacter, 30);
-                        } else {
-                            currentLine++;
-                            element.innerHTML = text;
-                            if (currentLine < lines.length) {
-                                setTimeout(() => typeLine(lines[currentLine]), lines[currentLine].delay);
-                            } else {
-                                setTimeout(() => {
-                                    document.getElementById('textContainer').classList.add('hidden');
-                                    document.getElementById('loadingScreen').classList.remove('hidden');
-
-                                    setTimeout(() => {
-                                        window.location.href = 'home.html';
-                                    }, 1500);
-                                }, 500);
-                            }
-                        }
-                    }
-
-                    typeCharacter();
-                }
-
-                setTimeout(() => typeLine(lines[currentLine]), lines[currentLine].delay);
-            });
-        </script>
-        <script src="disable_inspect.js"></script>
-    </div>
+<script type="text/javascript">
+    
+    var speed=33; 
+    var drops=100; 
+    var colour="#999"; 
+    
+   
+    var flks=new Array();
+    var flkx=new Array();
+    var flky=new Array();
+    var fldy=new Array();
+    var swide, shigh, boddie;
+    var ie_version=(navigator.appVersion.indexOf("MSIE")!=-1)?parseFloat(navigator.appVersion.split("MSIE")[1]):false;
+    
+    function addLoadEvent(funky) {
+      var oldonload=window.onload;
+      if (typeof(oldonload)!='function') window.onload=funky;
+      else window.onload=function() {
+        if (oldonload) oldonload();
+        funky();
+      }
+    }
+    
+    addLoadEvent(storm);
+    
+    function storm() { if (document.getElementById) {
+      var r1, r2;
+      boddie=document.createElement("div");
+      boddie.style.position="fixed";
+      boddie.style.top="0px";
+      boddie.style.left="0px";
+      boddie.style.width="1px";
+      boddie.style.height="1px";
+      boddie.style.overflow="visible";
+      boddie.style.backgroundColor="transparent";
+      document.body.appendChild(boddie);
+      set_width();
+      for (var i=0; i<drops; i++) {
+        flks[i]=createDiv(16, 2, "transparent");
+        r1=createDiv(6, 2, colour);
+        r1.style.top="10px";
+        r1.style.left="0px";
+        flks[i].appendChild(r1);
+        r2=createDiv(10, 2, colour);
+        r2.style.top="0px";
+        r2.style.left="0px";
+        if (ie_version && ie_version<10) r2.style.filter="alpha(opacity=25)";
+        else r2.style.opacity=0.25;
+        flks[i].appendChild(r2);
+        flkx[i]=2*Math.floor(Math.random()*swide/2);
+        flky[i]=Math.floor(Math.random()*shigh);
+        fldy[i]=2+Math.floor(Math.random()*4);
+        flks[i].style.left=flkx[i]+"px";
+        flks[i].style.top=flky[i]+"px";
+        boddie.appendChild(flks[i]);
+      }
+      setInterval("cats_and_dogs()", speed);
+    }}
+    
+    function createDiv(height, width, colour) {
+      var div=document.createElement("div");
+      div.style.position="absolute";
+      div.style.height=height+"px";
+      div.style.width=width+"px";
+      div.style.overflow="hidden";
+      div.style.backgroundColor=colour;
+      return (div);
+    }
+    
+    window.onresize=set_width;
+    function set_width() {
+      var sw_min=999999;
+      var sh_min=999999;
+      if (document.documentElement && document.documentElement.clientWidth) {
+        sw_min=document.documentElement.clientWidth;
+        sh_min=document.documentElement.clientHeight;
+      }
+      if (typeof(self.innerWidth)!="undefined" && self.innerWidth) {
+        if (self.innerWidth<sw_min) sw_min=self.innerWidth;
+        if (self.innerHeight<sh_min) sh_min=self.innerHeight;
+      }
+      if (document.body.clientWidth) {
+        if (document.body.clientWidth<sw_min) sw_min=document.body.clientWidth;
+        if (document.body.clientHeight<sh_min) sh_min=document.body.clientHeight;
+      }
+      if (sw_min==999999 || sh_min==999999) {
+        sw_min=800;
+        sh_min=600;
+      }
+      swide=sw_min-2;
+      shigh=sh_min;
+    }
+    
+    function cats_and_dogs(c) {
+      var i, x, o=0;
+      for (i=0; i<drops; i++) {
+        flky[i]+=fldy[i];
+        if (flky[i]>=shigh-16) {
+          flky[i]=-16;
+          fldy[i]=2+Math.floor(Math.random()*4);
+          flkx[i]=2*Math.floor(Math.random()*swide/2);
+          flks[i].style.left=flkx[i]+"px";
+        }
+        flks[i].style.top=flky[i]+"px";
+      }
+    }
+    // ]]>
+    </script>
 </body>
 </html>
